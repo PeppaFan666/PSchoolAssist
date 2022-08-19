@@ -5,8 +5,8 @@ Current build:
  - 0.05 (took 5 trys run in browser)
 
 Current Features:
-  -Dark mode text editor
-  -File Saving (only save in browser, but I don't see a reason why it needs hard drive acess yet either.)
+  \n-Dark mode text editor
+  \n-File Saving (only save in browser, but I don't see a reason why it needs hard drive acess yet either.)
   -Copy Paste
 
 Planned Features:
