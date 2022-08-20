@@ -1,0 +1,76 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://alvarado/fonts/Desktop/Alvarado-Light.otf" type="DynamicFontData" id=1]
+[ext_resource path="res://MainTheme.tres" type="Theme" id=2]
+
+[sub_resource type="DynamicFont" id=1]
+size = 40
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 20
+font_data = ExtResource( 1 )
+
+[node name="About" type="Control"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+margin_left = 312.0
+margin_top = 9.0
+margin_right = 712.0
+margin_bottom = 59.0
+theme = ExtResource( 2 )
+custom_fonts/normal_font = SubResource( 1 )
+text = "   Welcome To PSA"
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="."]
+margin_left = 312.0
+margin_top = 50.0
+margin_right = 712.0
+margin_bottom = 475.0
+theme = ExtResource( 2 )
+custom_fonts/normal_font = SubResource( 2 )
+text = "This is a small project I am making in my free time. 
+
+This is mostly to help me with school, but it may help you as well!
+
+Check the Github to know whats up with development!
+
+						 CREDITS
+			   PeppaFan666 - Creator
+	  Hector Torres - Alvarado Font Maker
+	(Font sourced from Fontesk and 
+	not affiliated in any way with PSA)
+				
+Created with Godot and hosted with Github Pages
+
+Github Link: 
+			"
+
+[node name="LineEdit" type="LineEdit" parent="."]
+margin_left = 312.0
+margin_top = 453.0
+margin_right = 667.0
+margin_bottom = 480.0
+theme = ExtResource( 2 )
+text = "https://github.com/PeppaFan666/PSchoolAssist"
+editable = false
+
+[node name="RichTextLabel3" type="RichTextLabel" parent="."]
+margin_left = 314.0
+margin_top = 487.0
+margin_right = 714.0
+margin_bottom = 519.0
+theme = ExtResource( 2 )
+custom_fonts/normal_font = SubResource( 2 )
+text = "Font Link:"
+
+[node name="LineEdit2" type="LineEdit" parent="."]
+margin_left = 312.0
+margin_top = 513.0
+margin_right = 667.0
+margin_bottom = 540.0
+theme = ExtResource( 2 )
+text = "https://fontesk.com/alvarado-typeface/"
+editable = false

@@ -1,0 +1,159 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://BaseInterface.gd" type="Script" id=1]
+[ext_resource path="res://BaseResult.gd" type="Script" id=2]
+[ext_resource path="res://tick.png" type="Texture" id=3]
+[ext_resource path="res://alvarado/fonts/Desktop/Alvarado-Light.otf" type="DynamicFontData" id=4]
+[ext_resource path="res://Input Base.gd" type="Script" id=5]
+[ext_resource path="res://BaseConverter.tscn" type="PackedScene" id=7]
+[ext_resource path="res://MainTheme.tres" type="Theme" id=8]
+[ext_resource path="res://scroll.png" type="Texture" id=9]
+[ext_resource path="res://scrollhighlight.png" type="Texture" id=10]
+
+[sub_resource type="DynamicFont" id=1]
+size = 40
+font_data = ExtResource( 4 )
+
+[sub_resource type="StyleBoxLine" id=2]
+color = Color( 0.0941176, 0.137255, 0.333333, 1 )
+thickness = 10
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 0.109804, 0.101961, 0.184314, 1 )
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 0.109804, 0.101961, 0.184314, 1 )
+
+[node name="BaseInterface" type="Control"]
+margin_top = -27.0
+margin_right = 40.0
+margin_bottom = 13.0
+script = ExtResource( 1 )
+
+[node name="BaseResult" type="RichTextLabel" parent="."]
+margin_left = 160.0
+margin_top = 425.0
+margin_right = 989.0
+margin_bottom = 504.0
+theme = ExtResource( 8 )
+custom_fonts/normal_font = SubResource( 1 )
+text = "The Result Is: "
+script = ExtResource( 2 )
+
+[node name="Input Base" type="HSlider" parent="."]
+margin_left = 70.0
+margin_top = 245.0
+margin_right = 479.0
+margin_bottom = 323.0
+custom_icons/tick = ExtResource( 3 )
+custom_icons/grabber_highlight = ExtResource( 10 )
+custom_icons/grabber = ExtResource( 9 )
+custom_styles/slider = SubResource( 2 )
+custom_styles/grabber_area_highlight = SubResource( 3 )
+custom_styles/grabber_area = SubResource( 4 )
+min_value = 2.0
+max_value = 35.0
+value = 2.0
+script = ExtResource( 5 )
+
+[node name="Min" type="RichTextLabel" parent="Input Base"]
+margin_left = -12.0
+margin_top = 30.0
+margin_bottom = 49.0
+theme = ExtResource( 8 )
+text = "2"
+
+[node name="Max" type="RichTextLabel" parent="Input Base"]
+margin_left = 415.0
+margin_top = 30.0
+margin_right = 435.0
+margin_bottom = 49.0
+theme = ExtResource( 8 )
+text = "35"
+
+[node name="Value" type="RichTextLabel" parent="Input Base"]
+margin_left = 207.0
+margin_right = 227.0
+margin_bottom = 19.0
+theme = ExtResource( 8 )
+text = "2"
+
+[node name="Name" type="RichTextLabel" parent="Input Base"]
+margin_left = 176.0
+margin_top = -24.0
+margin_right = 360.0
+margin_bottom = -5.0
+theme = ExtResource( 8 )
+text = "Input Base:"
+
+[node name="Output Base" type="HSlider" parent="."]
+margin_left = 540.0
+margin_top = 245.0
+margin_right = 949.0
+margin_bottom = 323.0
+custom_icons/tick = ExtResource( 3 )
+custom_icons/grabber_highlight = ExtResource( 10 )
+custom_icons/grabber = ExtResource( 9 )
+custom_styles/slider = SubResource( 2 )
+custom_styles/grabber_area_highlight = SubResource( 3 )
+custom_styles/grabber_area = SubResource( 4 )
+min_value = 2.0
+max_value = 35.0
+value = 10.0
+script = ExtResource( 5 )
+
+[node name="Min" type="RichTextLabel" parent="Output Base"]
+margin_left = -12.0
+margin_top = 30.0
+margin_right = 8.0
+margin_bottom = 49.0
+theme = ExtResource( 8 )
+text = "2"
+
+[node name="Max" type="RichTextLabel" parent="Output Base"]
+margin_left = 415.0
+margin_top = 30.0
+margin_right = 435.0
+margin_bottom = 49.0
+theme = ExtResource( 8 )
+text = "35"
+
+[node name="Value" type="RichTextLabel" parent="Output Base"]
+margin_left = 207.0
+margin_right = 235.0
+margin_bottom = 19.0
+theme = ExtResource( 8 )
+text = "10"
+
+[node name="Name" type="RichTextLabel" parent="Output Base"]
+margin_left = 169.0
+margin_top = -24.0
+margin_right = 353.0
+margin_bottom = -5.0
+theme = ExtResource( 8 )
+text = "Output Base:"
+
+[node name="SpinBox" type="SpinBox" parent="."]
+margin_left = 488.0
+margin_top = 166.0
+margin_right = 564.0
+margin_bottom = 183.0
+max_value = 10000.0
+align = 1
+
+[node name="Name" type="RichTextLabel" parent="SpinBox"]
+margin_left = -13.0
+margin_top = -33.0
+margin_right = 171.0
+margin_bottom = -14.0
+theme = ExtResource( 8 )
+text = "Input Number"
+
+[node name="BaseConverter" parent="." instance=ExtResource( 7 )]
+
+[connection signal="CalculationComplete" from="." to="BaseResult" method="_on_BaseInterface_CalculationComplete"]
+[connection signal="value_changed" from="Input Base" to="." method="_on_Input_Base_value_changed"]
+[connection signal="value_changed" from="Input Base" to="Input Base" method="_on_Input_Base_value_changed"]
+[connection signal="value_changed" from="Output Base" to="." method="_on_Output_Base_value_changed"]
+[connection signal="value_changed" from="Output Base" to="Output Base" method="_on_Input_Base_value_changed"]
+[connection signal="value_changed" from="SpinBox" to="." method="_on_SpinBox_value_changed"]
