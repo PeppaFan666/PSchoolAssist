@@ -1,21 +1,32 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://MainTheme.tres" type="Theme" id=1]
 [ext_resource path="res://alvarado/fonts/Desktop/Alvarado-Bold.otf" type="DynamicFontData" id=2]
 [ext_resource path="res://Editor.gd" type="Script" id=3]
+[ext_resource path="res://Output.gd" type="Script" id=4]
+[ext_resource path="res://OpenSet.gd" type="Script" id=5]
+[ext_resource path="res://Upload.gd" type="Script" id=6]
 
 [sub_resource type="DynamicFont" id=1]
 size = 24
 font_data = ExtResource( 2 )
 
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0.054902, 0.12549, 0.419608, 1 )
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 0.101961, 0.172549, 0.415686, 1 )
+
 [node name="SetScript" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_bottom = -110.0
 
 [node name="Editor" type="TextEdit" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = 20.0
+margin_bottom = -68.0
 theme = ExtResource( 1 )
 custom_fonts/font = SubResource( 1 )
 highlight_current_line = true
@@ -23,12 +34,91 @@ syntax_highlighting = true
 show_line_numbers = true
 script = ExtResource( 3 )
 
-[node name="Button" type="Button" parent="."]
+[node name="Output" type="TextEdit" parent="."]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -68.0
+margin_bottom = 108.0
+theme = ExtResource( 1 )
+custom_styles/read_only = SubResource( 2 )
+custom_styles/normal = SubResource( 3 )
+readonly = true
+script = ExtResource( 4 )
+
+[node name="Clear" type="Button" parent="Output"]
 anchor_left = 1.0
 anchor_right = 1.0
-margin_left = -36.0
-margin_bottom = 20.0
+margin_left = -40.0
+margin_bottom = 17.0
 theme = ExtResource( 1 )
-text = "Run"
+text = "Clear"
 
-[connection signal="pressed" from="Button" to="Editor" method="_on_Button_pressed"]
+[node name="Buttons" type="HBoxContainer" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -150.0
+margin_bottom = 21.0
+alignment = 2
+
+[node name="Run" type="Button" parent="Buttons"]
+margin_left = 11.0
+margin_right = 50.0
+margin_bottom = 21.0
+theme = ExtResource( 1 )
+text = " Run "
+
+[node name="Save" type="Button" parent="Buttons"]
+margin_left = 54.0
+margin_right = 98.0
+margin_bottom = 21.0
+theme = ExtResource( 1 )
+text = " Save "
+
+[node name="Open" type="Button" parent="Buttons"]
+margin_left = 102.0
+margin_right = 150.0
+margin_bottom = 21.0
+theme = ExtResource( 1 )
+text = " Open "
+
+[node name="Open" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.044
+margin_right = -250.0
+margin_bottom = -600.3
+script = ExtResource( 5 )
+
+[node name="FileDialog" type="FileDialog" parent="Open"]
+margin_left = 434.0
+margin_top = 221.0
+margin_right = 749.0
+margin_bottom = 461.0
+theme = ExtResource( 1 )
+access = 1
+filters = PoolStringArray( "*.pt ; Peppa Text" )
+
+[node name="Upload" type="Control" parent="."]
+script = ExtResource( 6 )
+
+[node name="FileDialog" type="FileDialog" parent="Upload"]
+visible = true
+margin_left = 425.0
+margin_top = 140.0
+margin_right = 740.0
+margin_bottom = 270.0
+theme = ExtResource( 1 )
+window_title = "Open a File"
+mode = 0
+access = 1
+filters = PoolStringArray( "*.pt ; Peppa Text" )
+
+[connection signal="output" from="Editor" to="Output" method="_on_Editor_output"]
+[connection signal="text_changed" from="Editor" to="Editor" method="_on_Editor_text_changed"]
+[connection signal="pressed" from="Output/Clear" to="Output" method="_on_Clear_pressed"]
+[connection signal="pressed" from="Buttons/Run" to="Editor" method="_on_Button_pressed"]
+[connection signal="pressed" from="Buttons/Save" to="Open" method="_on_Button_pressed"]
+[connection signal="pressed" from="Buttons/Open" to="Upload" method="_on_Button_pressed"]
+[connection signal="file_selected" from="Open/FileDialog" to="Open" method="_on_FileDialog_file_selected"]
+[connection signal="Upload" from="Upload" to="Editor" method="_on_Upload_Upload"]
+[connection signal="file_selected" from="Upload/FileDialog" to="Upload" method="_on_FileDialog_file_selected"]
