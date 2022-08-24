@@ -16,6 +16,7 @@ func _ready():
 	add_keyword_color("for", Color(0.417969, 0.371131, 0.065308))
 	add_keyword_color("by", Color(0.417969, 0.371131, 0.065308))
 	add_keyword_color("until", Color(0.417969, 0.371131, 0.065308))
+	add_keyword_color("is", Color(0.417969, 0.371131, 0.065308))
 	
 	add_keyword_color("unin", Color(0.417969, 0.065308, 0.26368))
 	add_keyword_color("intr", Color(0.417969, 0.065308, 0.26368))
@@ -25,6 +26,10 @@ func _ready():
 	add_keyword_color("get", Color(0.660156, 0.479484, 0.051575))
 	add_keyword_color("check",Color(0.660156, 0.479484, 0.051575))
 	add_keyword_color("out",Color(0.660156, 0.479484, 0.051575))
+	
+	add_keyword_color("real",Color(0.373517, 0.008774, 0.449219))
+	add_keyword_color("rational",Color(0.373517, 0.008774, 0.449219))
+	add_keyword_color("irrational",Color(0.373517, 0.008774, 0.449219))
 	
 
 func run(code : String) -> void:
@@ -246,19 +251,44 @@ func process_rule(key: String,x : String) -> bool:
 	rule = s
 	var split = rule.split(" ")
 	var left = float(split[0])
-	var right = float(split[2])
+	var right = split[2]
 	var check = split[1]
 	match check:
 		">":
-			return left > right
+			return left > float(right)
 		"<":
-			return left < right
+			return left < float(right)
 		"|":
-			return left == right
+			return left == float(right)
 		">|":
-			return left >= right
+			return left >= float(right)
 		"<|":
-			return left <= right
+			return left <= float(right)
+		"is":
+			if right == "real":
+				return not("i" in split[0])
+			if right == "rational":
+				if "."  in split[0]:
+					var decs = []
+					var split2 = split[0].split(".")
+					for i in split2[1]:
+						if i in decs:
+							continue
+						decs.append(i)
+					if len(decs) > len(split2[1]) /2:
+						return false
+				return true	
+			if right == "irrational":
+				if "."  in split[0]:
+					var decs = []
+					var split2 = split[0].split(".")
+					for i in split2[1]:
+						if i in decs:
+							continue
+						decs.append(i)
+					if len(decs) > len(split2[1]) /2:
+						return true
+				return false
 	return false
 
 func get_all(input: String,from : int) -> String:
