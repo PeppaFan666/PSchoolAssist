@@ -1,20 +1,31 @@
 extends TextEdit
 
 var rules : Dictionary = {}
+var sets : Dictionary = {}
 
 signal output(value)
 
 func _ready():
 	#add_keyword_color("|", Color(0.542969, 0.231186, 0.135742))
 	add_keyword_color("let", Color(0.406166, 0.542969, 0.135742))
-	add_keyword_color("get", Color(0.406166, 0.542969, 0.135742))
-	add_keyword_color("check", Color(0.406166, 0.542969, 0.135742))
+	add_keyword_color("collect", Color(0.406166, 0.542969, 0.135742))
+	add_keyword_color("into", Color(0.406166, 0.542969, 0.135742))
 	#add_keyword_color(" x ", Color(0.065308, 0.368376, 0.417969))
 	add_keyword_color("xI", Color(0.065308, 0.368376, 0.417969))
 	
-	add_keyword_color("for", Color(0.417969, 0.065308, 0.26368))
+	add_keyword_color("for", Color(0.417969, 0.371131, 0.065308))
+	add_keyword_color("by", Color(0.417969, 0.371131, 0.065308))
+	add_keyword_color("until", Color(0.417969, 0.371131, 0.065308))
+	
 	add_keyword_color("unin", Color(0.417969, 0.065308, 0.26368))
 	add_keyword_color("intr", Color(0.417969, 0.065308, 0.26368))
+	add_keyword_color("compound", Color(0.417969, 0.065308, 0.26368))
+	add_keyword_color("conform", Color(0.417969, 0.065308, 0.26368))
+	
+	add_keyword_color("get", Color(0.660156, 0.479484, 0.051575))
+	add_keyword_color("check",Color(0.660156, 0.479484, 0.051575))
+	add_keyword_color("out",Color(0.660156, 0.479484, 0.051575))
+	
 
 func run(code : String) -> void:
 	var lines := code.split(";")
@@ -27,8 +38,124 @@ func run(code : String) -> void:
 				eval_intr(line)
 				continue
 			eval_let(line)
+		if "collect" in line:
+			eval_collect(line)
 		if "check" in line: # line = check a for 10
 			eval_check(line)
+		if "out" in line:
+			eval_out(line)
+		if "compound" in line:
+			eval_compound(line)
+		if "conform" in line:
+			eval_conform(line)
+		if "get" in line:
+			eval_get(line)
+			
+func eval_get(line: String) -> void:
+	var l2 = line.split("until")
+	var num = clean(l2[1])
+	
+	var l3 = l2[0].split("get")
+	var key = clean(l3[1])
+	
+	var res = ""
+	
+	for i in range(int(num)+1):
+		if process_rule(key,str(i)):
+			res+= str(i) + ","
+	if len(res) == 0:
+		res += "null,"
+	var fin = ""
+	for i in range(len(res)-1):
+		fin += res[i]
+	var st = "%s = %s until %s"
+	st = st % [key,fin,num]
+	emit_signal("output",st)
+	
+func eval_conform(line: String) -> void:
+	var l2 = line.split("by")
+	var keyList = l2[1].split("into")
+	var key = clean(keyList[1])
+	var two = clean(keyList[0])
+	var startList = l2[0].split("conform")
+	var one = clean(startList[1])
+	var oneList = sets[one].split(",")
+	
+	
+	var res = ""
+	
+	for x in oneList:
+		if process_rule(two,x):
+			res += x + ","
+	if len(res) == 0:
+		res += "null,"
+	var fin = ""
+	for i in range(len(res)-1):
+		fin += res[i]
+	sets[key] = fin
+	
+func eval_compound(line: String) -> void:
+	var l2 = line.split("compound")
+	l2 = l2[1].split("into")
+	var newset = []
+	if "intr" in l2[0]:
+		var l3 = l2[0].split("intr")
+		var one = sets[clean(l3[0])]
+		var two = sets[clean(l3[1])]
+		var intone = []
+		var inttwo = []
+		for i in one.split(","):
+			intone.append(int(i))
+		for i in two.split(","):
+			inttwo.append(int(i))
+		for i in intone:
+			if i in inttwo:
+				if (i in newset):
+					continue
+				newset.append(i)
+		for i in inttwo:
+			if i in intone:
+				if (i in newset):
+					continue
+				newset.append(i)
+	if "unin" in l2[0]:
+		var l3 = l2[0].split("unin")
+		var one = sets[clean(l3[0])]
+		var two = sets[clean(l3[1])]
+		var intone = []
+		var inttwo = []
+		for i in one.split(","):
+			intone.append(int(i))
+		for i in two.split(","):
+			inttwo.append(int(i))
+		for i in intone:
+			if (i in newset):
+				continue
+			newset.append(i)
+		for i in inttwo:
+			if (i in newset):
+				continue
+			newset.append(i)
+	var res = ""
+	newset = Array(newset)
+	newset.sort()
+	for i in newset:
+		res += str(i) + ","
+	if len(newset) == 0:
+		res += "null,"
+	var fin = ""
+	for i in range(len(res)-1):
+		fin += res[i]
+	sets[clean(l2[1])] = fin
+
+	
+func eval_out(line: String) -> void:
+	var l2 = line.split("out")
+	var st = "%s = %s"
+	var key =clean(l2[1])
+	st = st % [key,sets[key]]
+	
+	emit_signal("output",st)
 
 func eval_unin(line: String) -> void:
 	var l = line.split("=") #l =[let c ,  a unin b]
@@ -63,6 +190,20 @@ func eval_let(line : String) -> void:
 	var rule = clean(l3[1])+ " " + clean(l3[2]) + " " + clean(l3[3])
 	#finish getting Rule
 	rules[varName] = rule #finish parsing
+	
+func eval_collect(line : String) -> void:
+	var l = line.split("=") #l = [let A, {xI x < 6}]
+	
+	#begin getting varName 
+	var l2 = l[0].split("collect") # l2 = [,  A 0]
+	var varName = clean(l2[1]) # varName = A
+	#finish getting varName 
+	
+	#begin getting Rule
+	l2 = l[1] #l2 = [{, x<6}}
+	
+	var l3 = clean(l2,[" ","{","}"])
+	sets[varName] = l3
 
 
 func eval_check(line : String) -> void:
