@@ -112,7 +112,7 @@ func process_rule(key: String,x : String) -> bool:
 			return left > right
 		"<":
 			return left < right
-		"=":
+		"|":
 			return left == right
 		">|":
 			return left >= right
